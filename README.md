@@ -1,2 +1,12 @@
 # OpenJs
-An open source repo, aims to provide practical codes to use directly in your code base
+An open source code repo for JS / React / React Native, aims to provide piece of usefull code that you can directly use / customise for your use case.
+
+Problem: I generally face problems where I need a library but not all the part of that lib or i need a customised version of lib (just for my use case). So I got OpenJs
+
+# Contribute:
+- Make changes to a code piece and raise a PR.
+- Make a new version of a code piece and raise a PR / add in a comment.
+- Upload your code on your Repo and Link it here. (Write me at: abhisri2090@gmail.com).
+
+# List of Items:
+1 - useApiCall: a hook to formate api calls life cycle &  and separates Api calls form UI.
