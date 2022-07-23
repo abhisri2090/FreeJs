@@ -6,7 +6,7 @@ Problem: I generally face problems where I need a library but not all the part o
 # Contribute:
 - Make changes to a code piece and raise a PR.
 - Make a new version of a code piece and raise a PR / add in a comment.
-- Upload your code on your Repo and Link it here. (Write me at: abhisri2090@gmail.com).
+- Upload your code on your Repo and Link it here. (Write to me at: abhisri2090@gmail.com).
 
 # List of Items:
 1 - useApiCall: a hook to format api calls life-cycle and separates Api calls form UI.
