@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { TokenService } from '@c2fo/react-services';
+import {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 
-import { RequestConfig, ResponseConfig, JsonFormData } from '../../../types/axios.schema';
-import { DEFAULT_INTERCEPTOR_CONFIG, AUTH_TOKEN_KEY } from '../../../constants';
+import { RequestConfig, ResponseConfig, JsonFormData } from '../axios.schema';
+import { DEFAULT_INTERCEPTOR_CONFIG, AUTH_TOKEN_KEY } from '../../constants';
 
 let requestInterceptorRef: number | null = null;
 let responseInterceptorRef: number | null = null;
@@ -13,7 +17,7 @@ let responseInterceptorRef: number | null = null;
  * @description generate default headers which can be send with every request
  */
 const getDefaultHeaders = () => {
-  const token = AUTH_TOKEN_KEY
+  const token = AUTH_TOKEN_KEY;
 
   let headers = {};
   if (token) {
@@ -62,7 +66,7 @@ const jsonToFormData = (jsonObj: JsonFormData = {}) => {
 const formatApiError = (
   status?: string | number,
   data?: Record<string, unknown>,
-  options: ResponseConfig['options'] = {},
+  options: ResponseConfig['options'] = {}
 ): Promise<never> => {
   // eslint-disable-next-line prefer-promise-reject-errors
   return Promise.reject({ status, data, options });
@@ -82,7 +86,9 @@ const onRequest = (axiosConfig: RequestConfig): AxiosRequestConfig => {
   if (config.method === 'get') {
     const defaultParams = getDefaultParams();
     if (defaultParams && config.url) {
-      config.url += config.url.includes('?') ? `&${defaultParams}` : `?${defaultParams}`;
+      config.url += config.url.includes('?')
+        ? `&${defaultParams}`
+        : `?${defaultParams}`;
     }
   } else {
     const defaultBody = getDefaultBody();
@@ -121,7 +127,9 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
  * @param {AxiosResponse} resp
  * @description on axois success response
  */
-const onResponseSuccess = (response: AxiosResponse): AxiosResponse | Promise<never> => {
+const onResponseSuccess = (
+  response: AxiosResponse
+): AxiosResponse | Promise<never> => {
   const { options } = response.config as ResponseConfig & AxiosResponse;
 
   if (options.fullResponse) {
@@ -139,7 +147,8 @@ const onResponseSuccess = (response: AxiosResponse): AxiosResponse | Promise<nev
  * @description on axois error response
  */
 const onResponseError = (err: AxiosError): Promise<AxiosError> => {
-  const { options } = (err.config || {}) as AxiosError['config'] & ResponseConfig;
+  const { options } = (err.config || {}) as AxiosError['config'] &
+    ResponseConfig;
   const { data, status } = err.response || { status: 0 };
 
   return formatApiError(status, data, options);
@@ -152,10 +161,16 @@ const onResponseError = (err: AxiosError): Promise<AxiosError> => {
  */
 const registerNetworkInterceptor = (instance: AxiosInstance) => {
   // handle default configuration in request interceptor
-  requestInterceptorRef = instance.interceptors.request.use(onRequest, onRequestError);
+  requestInterceptorRef = instance.interceptors.request.use(
+    onRequest,
+    onRequestError
+  );
 
   // handle default configuration in response interceptor
-  responseInterceptorRef = instance.interceptors.response.use(onResponseSuccess, onResponseError);
+  responseInterceptorRef = instance.interceptors.response.use(
+    onResponseSuccess,
+    onResponseError
+  );
 };
 
 /**
@@ -165,10 +180,12 @@ const registerNetworkInterceptor = (instance: AxiosInstance) => {
  */
 const deregisterNetworkInterceptor = (instance: AxiosInstance) => {
   // handle default configuration in request interceptor
-  if (requestInterceptorRef) instance.interceptors.request.eject(requestInterceptorRef);
+  if (requestInterceptorRef)
+    instance.interceptors.request.eject(requestInterceptorRef);
 
   // handle default configuration in response interceptor
-  if (responseInterceptorRef) instance.interceptors.response.eject(responseInterceptorRef);
+  if (responseInterceptorRef)
+    instance.interceptors.response.eject(responseInterceptorRef);
 };
 
 export default {

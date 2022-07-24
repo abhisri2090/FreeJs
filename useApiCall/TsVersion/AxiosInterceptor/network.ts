@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, CancelTokenSource, AxiosResponse } from 'axios';
 
-import config from '../../../../config';
 import networkInterceptor from './interceptor';
-import { ApiRequest, RequestConfig, CustomAxios } from '../../../types/axios.schema';
+import { ApiRequest, RequestConfig, CustomAxios } from '../axios.schema';
 
 // Change is base url on project basis
 const baseURL = 'https://www.baseUrl.com'
