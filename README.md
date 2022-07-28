@@ -1,6 +1,6 @@
 # FreeJs
 An free source code repo for JS / React / React Native, aims to provide piece of useful code that you can directly use / customise for your use case.
-Problem: I generally face problems where I need a library but not all the part of that lib or i need a customised version of lib (just for my use case). So I got FreeJs
+Problem: I generally face problems where I need a library but not all the part of that lib or i need a customised version of lib (just for my use case). So I got FreeJs.
 __Note :__
 * Every module will have a elaborated Readme with module description, problem / issue addressed and code walk-through / methodology.
 * Modules will have proper comments on code with an example.
