@@ -15,7 +15,7 @@ codeSandBox example => https://codesandbox.io/s/sweet-bohr-ieqlk9
 4) Manipulating Api param, url or response object on some conditional basis creates unnecessary mess inside a React component.
 
 ## Solution
-Build a axios wrapper that forces developer to follow a defined path.
+Build a axios wrapper that forces developer to follow a defined path of writing an API call.
 
 ## Code walkthrough
 Hook implementation has been divided into three parts:

@@ -28,17 +28,28 @@ type ReturnProps<T = undefined, R = defaultReturnType> = [
  * @param apiCallService API call service function, that must be defined in service file
  * @param onSuccess optional callback, called on api success
  * @param onFail optional callback, called on api failure
- * @param skipRouter to skip router navigation (logout) on api failure (401) THIS SHOULD ONLY BE USED IN REACT COMPONENTS BEFORE ROUTER IS INITIALIZED
+ * @param skipRouter to skip router navigation (logout) on api failure (401), Use this to skip router initialisation
  * ---
- * Second param (configs) for the triggerApiCall
+ * ## triggerApiCall
  * @param params - directly passed to api service function
  * @param configs - optional configs
- *  - successMsg - optional success message
- *  - errorMsg - optional error message
- *  - hideDefaultError - optional, if true, default error message will not be shown
- *  - callBack - optional, if true, callback will be called on success
+ *  - successMsg - success message to show on api success
+ *  - errorMsg - error message to show on api failure
+ *  - hideDefaultError - if true, error message/toast will not be shown
+ *  - callBack - a callback on api response, use this to trigger a callback only for a particular api call
+ * @example
  * ``` js
- * { isError: false, response: response.data } => void
+ * // callBack example
+ * getUserData({userId: id}, {
+      callBack: ({isError, apiResponseData}) => {
+        if (!isError && apiResponseData) {
+          // do something on success
+        }
+        else {
+          // do something on failure
+        }
+      },
+    });
  * ```
  */
 function UseApiCall<T, R = Record<string, any>>(
@@ -74,14 +85,6 @@ function UseApiCall<T, R = Record<string, any>>(
     };
   }, [loading]);
 
-  /**
-   * @param params - directly passed to api service function
-   * @param configs - optional configs
-   *  - successMsg - optional success message
-   *  - errorMsg - optional error message
-   *  - hideDefaultError - optional, if true, default error message will not be shown
-   *  - callBack - optional, if true, callback will be called on success
-   * */
   const callApi = (
     params?: Parameters<typeof apiCallService>[0],
     configs: ApiConfigs<R> = {}
@@ -112,19 +115,13 @@ function UseApiCall<T, R = Record<string, any>>(
         if (configs.callBack)
           configs.callBack({ isError: true, response: err });
 
-        let formatMessage;
         if (Number(err?.status) === 401) {
           onUnauthenticated();
         } else if (Number(err?.status) > 399) {
           if (!err?.options?.hideDefaultError)
             openSnackbar(
-              configs.errorMsg ||
-                err.options?.errMsg ||
-                formatMessage ||
-                SOMETHING_WRONG,
-              {
-                variant: 'error',
-              }
+              configs.errorMsg || err.options?.errMsg || SOMETHING_WRONG,
+              { variant: 'error' }
             );
           setError(err);
           if (onFail) onFail(err);
