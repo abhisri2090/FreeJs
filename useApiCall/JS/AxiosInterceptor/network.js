@@ -1,14 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosInstance, CancelTokenSource, AxiosResponse } from 'axios';
+import axios from 'axios';
 
-import config from '../../../../config';
 import networkInterceptor from './interceptor';
-import { ApiRequest, RequestConfig, CustomAxios } from '../../../types/axios.schema';
 
 // Change is base url on project basis
-const baseURL = 'https://www.baseUrl.com'
+const baseURL = 'https://www.baseUrl.com';
 const REQUEST_TIMEOUT = 20000;
-let instance: AxiosInstance;
+let instance;
 
 /**
  * @function getInstance
@@ -26,7 +23,7 @@ const getInstance = async () => {
  * @function createInstance
  * @description create axios instance only once
  */
-const createInstance = (): AxiosInstance => {
+const createInstance = () => {
   instance = axios.create({
     baseURL,
     timeout: REQUEST_TIMEOUT,
@@ -35,7 +32,7 @@ const createInstance = (): AxiosInstance => {
   return instance;
 };
 
-const getCancelToken = (): CancelTokenSource => {
+const getCancelToken = () => {
   const source = axios.CancelToken.source();
   return source;
 };
@@ -45,19 +42,19 @@ const getCancelToken = (): CancelTokenSource => {
  * @param {ApiRequest} callback - an axios api request function like get / post / put
  * @description Return new Promise with cancellation mechanism
  */
-const applyCancelPromise = (callback: ApiRequest): CustomAxios => {
+const applyCancelPromise = (callback) => {
   const cancelToken = getCancelToken();
   let isRequestComplete = false;
 
   const requestCancelPromise = {
-    axiosCall: new Promise<AxiosResponse>((resolve, reject) => {
+    axiosCall: new ((resolve, reject) => {
       callback(cancelToken.token)
         .then(resolve)
         .catch(reject)
         .finally(() => {
           isRequestComplete = true;
         });
-    }),
+    })(),
     abort: () => {
       if (isRequestComplete) return;
       cancelToken.cancel();
@@ -77,12 +74,7 @@ const applyCancelPromise = (callback: ApiRequest): CustomAxios => {
  * - fullResponse: to get the actual axios api response (only data object in the apu response is returned)
  * - hideDefaultError: to hide the default error message (use in case of custom conditional error message)
  */
-const get = (
-  url: string,
-  params?: Record<string, any>,
-  headers?: Record<string, string>,
-  options: RequestConfig['options'] = {},
-) => {
+const get = (url, params, headers, options = {}) => {
   return applyCancelPromise((token) => {
     const urlParams = new URLSearchParams(params).toString();
     let newUrl = url;
@@ -94,7 +86,7 @@ const get = (
       headers,
       options,
       cancelToken: token,
-    } as RequestConfig);
+    });
   });
 };
 
@@ -109,18 +101,13 @@ const get = (
  * - fullResponse: to get the actual axios api response (only data object in the apu response is returned)
  * - hideDefaultError: to hide the default error message (use in case of custom conditional error message)
  */
-const post = (
-  url: string,
-  body?: Record<string, any>,
-  headers?: Record<string, string>,
-  options: RequestConfig['options'] = {},
-) => {
+const post = (url, body, headers, options = {}) => {
   return applyCancelPromise((token) => {
     return instance.post(url, body, {
       headers,
       options,
       cancelToken: token,
-    } as RequestConfig);
+    });
   });
 };
 
@@ -135,18 +122,13 @@ const post = (
  * - fullResponse: to get the actual axios api response (only data object in the apu response is returned)
  * - hideDefaultError: to hide the default error message (use in case of custom conditional error message)
  */
-const patch = (
-  url: string,
-  body?: Record<string, string>,
-  headers?: Record<string, string>,
-  options: RequestConfig['options'] = {},
-) => {
+const patch = (url, body, headers, options = {}) => {
   return applyCancelPromise((token) => {
     return instance.patch(url, body, {
       headers,
       options,
       cancelToken: token,
-    } as RequestConfig);
+    });
   });
 };
 
@@ -161,13 +143,13 @@ const patch = (
  * - fullResponse: to get the actual axios api response (only data object in the apu response is returned)
  * - hideDefaultError: to hide the default error message (use in case of custom conditional error message)
  */
-const deleteCall = (url: string, headers?: Record<string, string>, options: RequestConfig['options'] = {}) => {
+const deleteCall = (url, headers, options = {}) => {
   return applyCancelPromise((token) => {
     return instance.delete(url, {
       headers,
       options,
       cancelToken: token,
-    } as RequestConfig);
+    });
   });
 };
 

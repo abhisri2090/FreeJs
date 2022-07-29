@@ -1,19 +1,21 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { TokenService } from '@c2fo/react-services';
+import {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 
-import { RequestConfig, ResponseConfig, JsonFormData } from '../../../types/axios.schema';
 import { DEFAULT_INTERCEPTOR_CONFIG, AUTH_TOKEN_KEY } from '../../../constants';
 
-let requestInterceptorRef: number | null = null;
-let responseInterceptorRef: number | null = null;
+let requestInterceptorRef = null;
+let responseInterceptorRef = null;
 
 /**
  * @function getDefaultHeaders
  * @description generate default headers which can be send with every request
  */
 const getDefaultHeaders = () => {
-  const token = AUTH_TOKEN_KEY
+  const token = AUTH_TOKEN_KEY;
 
   let headers = {};
   if (token) {
@@ -45,7 +47,7 @@ const getDefaultBody = () => {
  * @param {JsonFormData} jsonObj
  * @description Convert Json object to FormData {pass 'hasFormData' to options in post/put request object}
  */
-const jsonToFormData = (jsonObj: JsonFormData = {}) => {
+const jsonToFormData = (jsonObj = {}) => {
   const formData = new FormData();
   Object.entries(jsonObj).forEach(([key, val]) => {
     formData.append(key, val);
@@ -59,11 +61,7 @@ const jsonToFormData = (jsonObj: JsonFormData = {}) => {
  * @param {object} data
  * @description return API error
  */
-const formatApiError = (
-  status?: string | number,
-  data?: Record<string, unknown>,
-  options: ResponseConfig['options'] = {},
-): Promise<never> => {
+const formatApiError = (status, data, options = {}) => {
   // eslint-disable-next-line prefer-promise-reject-errors
   return Promise.reject({ status, data, options });
 };
@@ -73,7 +71,7 @@ const formatApiError = (
  * @param {AxiosRequestConfig} config
  * @description on axois request
  */
-const onRequest = (axiosConfig: RequestConfig): AxiosRequestConfig => {
+const onRequest = (axiosConfig) => {
   const config = { ...axiosConfig };
   config.options = { ...DEFAULT_INTERCEPTOR_CONFIG, ...config.options };
 
@@ -82,7 +80,9 @@ const onRequest = (axiosConfig: RequestConfig): AxiosRequestConfig => {
   if (config.method === 'get') {
     const defaultParams = getDefaultParams();
     if (defaultParams && config.url) {
-      config.url += config.url.includes('?') ? `&${defaultParams}` : `?${defaultParams}`;
+      config.url += config.url.includes('?')
+        ? `&${defaultParams}`
+        : `?${defaultParams}`;
     }
   } else {
     const defaultBody = getDefaultBody();
@@ -110,7 +110,7 @@ const onRequest = (axiosConfig: RequestConfig): AxiosRequestConfig => {
  * @param {AxiosRequestConfig} config
  * @description on axois request
  */
-const onRequestError = (error: AxiosError): Promise<AxiosError> => {
+const onRequestError = (error) => {
   // eslint-disable-next-line no-console
   console.warn(`[request error] [${JSON.stringify(error)}]`);
   return Promise.reject(error);
@@ -121,16 +121,16 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
  * @param {AxiosResponse} resp
  * @description on axois success response
  */
-const onResponseSuccess = (response: AxiosResponse): AxiosResponse | Promise<never> => {
-  const { options } = response.config as ResponseConfig & AxiosResponse;
+const onResponseSuccess = (response) => {
+  const { options } = response.config;
 
   if (options.fullResponse) {
-    return { data: response, options } as any;
+    return { data: response, options };
   }
 
   const { data } = response;
 
-  return { data, options } as any;
+  return { data, options };
 };
 
 /**
@@ -138,8 +138,8 @@ const onResponseSuccess = (response: AxiosResponse): AxiosResponse | Promise<nev
  * @param {AxiosError} resp
  * @description on axois error response
  */
-const onResponseError = (err: AxiosError): Promise<AxiosError> => {
-  const { options } = (err.config || {}) as AxiosError['config'] & ResponseConfig;
+const onResponseError = (err) => {
+  const { options } = err.config || {};
   const { data, status } = err.response || { status: 0 };
 
   return formatApiError(status, data, options);
@@ -150,12 +150,18 @@ const onResponseError = (err: AxiosError): Promise<AxiosError> => {
  * @param {AxiosInstance} instance
  * @description register interceptor; called just once at the start of app.
  */
-const registerNetworkInterceptor = (instance: AxiosInstance) => {
+const registerNetworkInterceptor = (instance) => {
   // handle default configuration in request interceptor
-  requestInterceptorRef = instance.interceptors.request.use(onRequest, onRequestError);
+  requestInterceptorRef = instance.interceptors.request.use(
+    onRequest,
+    onRequestError
+  );
 
   // handle default configuration in response interceptor
-  responseInterceptorRef = instance.interceptors.response.use(onResponseSuccess, onResponseError);
+  responseInterceptorRef = instance.interceptors.response.use(
+    onResponseSuccess,
+    onResponseError
+  );
 };
 
 /**
@@ -163,12 +169,14 @@ const registerNetworkInterceptor = (instance: AxiosInstance) => {
  * @param {AxiosInstance} instance
  * @description de-registers the interceptor; currently not being used (mostly it would not be used)
  */
-const deregisterNetworkInterceptor = (instance: AxiosInstance) => {
+const deregisterNetworkInterceptor = (instance) => {
   // handle default configuration in request interceptor
-  if (requestInterceptorRef) instance.interceptors.request.eject(requestInterceptorRef);
+  if (requestInterceptorRef)
+    instance.interceptors.request.eject(requestInterceptorRef);
 
   // handle default configuration in response interceptor
-  if (responseInterceptorRef) instance.interceptors.response.eject(responseInterceptorRef);
+  if (responseInterceptorRef)
+    instance.interceptors.response.eject(responseInterceptorRef);
 };
 
 export default {
