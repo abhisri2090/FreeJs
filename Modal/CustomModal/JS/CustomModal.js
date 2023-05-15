@@ -5,9 +5,9 @@ import { Modal } from '@mui/material';
  * @description A wrapper over Mui Modal
  * ---
  * ### Benefit
+ * - Easy to use!
  * - It can be called over onClick and without maintaining any state
  * - It doesn't re render parent to open/close a modal
- * - Easy to use!
  *
  * ### Limitation
  * - It can't be re rendered in sync with parent once opened (instead use as normal modal i.e. with state dependency)
