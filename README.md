@@ -27,5 +27,7 @@ We welcome contributions from the community! Here's how you can help:
 # FreeJs Modules 📂
 
 1 - [useApiCall](https://github.com/abhisri2090/FreeJs/tree/main/useApiCall): A hook to format API calls life-cycle and separate API calls from the UI.
+
 2 - [Modal](https://github.com/abhisri2090/FreeJs/tree/main/Modal): A synchronous way to handle modal (open modal onClick without state variable).
+
 3 - [Mui Table](https://github.com/abhisri2090/FreeJs/tree/main/Table): A clean and better way to use Mui Table with column sorting, custom filters, search (other filters can also be added), and pagination. The table handles various states like loading, error, and no-data. It uses props to allow customization of the data displayed, column configuration, sorting, and filtering.
